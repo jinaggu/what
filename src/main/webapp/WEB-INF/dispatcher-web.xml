@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+ 
+ <!-- db연결 부분 jdbc -->
+ <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+      <property name="driverClassName" value="oracle.jdbc.OracleDriver" />
+      <property name="url" value="jdbc:oracle:thin://@127.0.0.1:1521:xe" />
+      <property name="username" value="hr" />
+      <property name="password" value="a1234" />
+ </bean>
+ 
+  <!-- mybatis사용 dataSource를 참조해서 db와 mybatis연결 -->
+  <!-- [2] SqlSessionFactoryBean bean 선언 -->
+  <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+      <property name="dataSource" ref="dataSource" />
+      <!-- mapper등록 --> 
+      <!-- configuration에서 맵퍼등록하지않고  mapperLocation을 이용해서 바로 등록-->
+      <property name="mapperLocations">
+         <list> <!-- classpath가 자바파일모두를 이야기함. -->
+            <value>classpath:part05/memMapper.xml</value>
+         </list>
+      </property> 
+  </bean>  
+  
+  <!-- [3] SqlSessionTemplate bean 선언 -->
+  <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+      <constructor-arg ref="sqlSessionFactory" />
+  </bean> 
+  
+  <!-- [4] MemDaoImp bean 선언 -->
+  <bean id="dao" class="part05.MemDaoImp">
+  <!-- 프로퍼티값은 셋터메소드가 받는다. name값과 클래스에있는 변수값이 같아야 한다. -->
+      <property name="sqlSession" ref="sqlSession" />
+  </bean>
+
+
+<!-- controller등록 -->
+<bean class="part01.HelloController" />
+<bean class="part02.HelloModelController" />
+<bean class="part03.HelloModelAndViewController" />
+<bean class="part04.HelloCommandController" />
+<bean class="part05.MemListController" >
+  <property name="dao" ref="dao" />
+  <!-- property name은 그 클래스안에있는 멤버변수이름과 똑같아야한다! -->
+</bean>
+
+
+
+<!-- view등록 --> <!-- spring은 보안을 위해 web-inf안에 뷰 파일을 만듬(jsp) <-눈에 보여지는 곳 -->
+<!-- 리턴받은 웹주소 값 앞뒤에 /WEB-INF   .jsp붙여주기 위해서 사용 -->
+<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+   <property name="prefix" value="/WEB-INF/" />
+   <property name="suffix" value=".jsp" />
+</bean>
+
+</beans>

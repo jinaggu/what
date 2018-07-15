@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mem"> 
+
+
+   <!-- select안의 쿼리문이 resultType의 part05.MemDTO에 저장이 되는것이다. -->
+   <select id="all" resultType="part05.MemDTO">
+      select * from mem order by num desc 
+   </select>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
